@@ -2,6 +2,7 @@ package uol.compass.hackathon.Banking.System.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uol.compass.hackathon.Banking.System.dto.ClientDTO;
@@ -14,10 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("/api/clients")
 @RequiredArgsConstructor
 public class ClientController {
 
+    @Autowired
     private final ClientRepository clientRepository;
 
     // --- CREATE
