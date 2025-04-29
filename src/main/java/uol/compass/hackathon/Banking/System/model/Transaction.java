@@ -19,6 +19,7 @@ public class Transaction {
     private LocalDateTime timestamp;
 
     @ManyToOne
+    @JoinColumn(name = "source_id")
     private Account source;
 
     @ManyToOne
