@@ -1,47 +1,85 @@
 package uol.compass.hackathon.Banking.System.controller;
 
-
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import uol.compass.hackathon.Banking.System.dto.ClientDTO;
 import uol.compass.hackathon.Banking.System.model.Client;
 import uol.compass.hackathon.Banking.System.repository.ClientRepository;
-import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/clients")
+@RequiredArgsConstructor
 public class ClientController {
-    private final ClientRepository repository;
 
-    public ClientController(ClientRepository repository) {
-        this.repository = repository;
-    }
+    private final ClientRepository clientRepository;
 
+    // --- CREATE
     @PostMapping
-    public Client create(@RequestBody Client client) {
-        return repository.save(client);
+    public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDTO dto) {
+        Client client = toEntity(dto);
+        Client saved = clientRepository.save(client);
+        // Retorna 201 Created com header Location
+        return ResponseEntity
+                .created(URI.create("/clients/" + saved.getId()))
+                .body(saved);
     }
 
+    // --- READ ALL
     @GetMapping
-    public List<Client> findAll() {
-        return repository.findAll();
+    public ResponseEntity<List<Client>> listAll() {
+        List<Client> all = clientRepository.findAll();
+        return ResponseEntity.ok(all);
     }
 
+    // --- READ ONE
     @GetMapping("/{id}")
-    public Client findById(@PathVariable Long id) {
-        return repository.findById(id).orElse(null);
+    public ResponseEntity<Client> getById(@PathVariable Long id) {
+        Optional<Client> opt = clientRepository.findById(id);
+        return opt
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // --- UPDATE
     @PutMapping("/{id}")
-    public Client update(@PathVariable Long id, @RequestBody Client updated) {
-        return repository.findById(id).map(client -> {
-            client.setName(updated.getName());
-            client.setCpf(updated.getCpf());
-            return repository.save(client);
-        }).orElse(null);
+    public ResponseEntity<Client> updateClient(
+            @PathVariable Long id,
+            @Valid @RequestBody ClientDTO dto
+    ) {
+        return clientRepository.findById(id)
+                .map(existing -> {
+                    existing.setName(dto.getName());
+                    existing.setEmail(dto.getEmail());
+                    existing.setBirthdate(dto.getBirthdate());
+                    Client updated = clientRepository.save(existing);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // --- DELETE
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+        if (!clientRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        clientRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- Mapper DTO → Entity
+    private Client toEntity(ClientDTO dto) {
+        Client client = new Client();
+        client.setName(dto.getName());
+        client.setEmail(dto.getEmail());
+        client.setBirthdate(dto.getBirthdate());
+        return client;
     }
 }
