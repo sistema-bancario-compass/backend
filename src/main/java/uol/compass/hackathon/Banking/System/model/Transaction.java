@@ -1,0 +1,26 @@
+package uol.compass.hackathon.Banking.System.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String type; // deposit, withdraw, transfer
+    private Double amount;
+    private LocalDateTime timestamp;
+
+    @ManyToOne
+    private Account source;
+
+    @ManyToOne
+    private Account destination;
+}
