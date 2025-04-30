@@ -6,6 +6,5 @@ import uol.compass.hackathon.Banking.System.model.Transaction;
 import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-
     List<Transaction> findBySource(Account source);
 }

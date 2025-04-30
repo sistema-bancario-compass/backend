@@ -1,85 +1,140 @@
-# 🏦 Banking System (Refatoração COBOL)
+# Sistema Bancário: Uma Aplicação Moderna em Spring Boot para Gestão de Transações Financeiras
 
-Este projeto é uma refatoração moderna de um sistema bancário originalmente implementado em COBOL. Utiliza **Spring Boot 3.4.5**, Java 21, e segue as boas práticas de desenvolvimento backend com segurança e estruturação em camadas.
+Esta aplicação Spring Boot fornece um sistema bancário seguro e escalável que gerencia contas de clientes, processa transações financeiras e manipula dados dos clientes. O sistema oferece APIs RESTful para gerenciamento de contas, processamento de transações e operações com clientes, com foco em segurança e integridade dos dados.
 
----
+A aplicação moderniza operações bancárias tradicionais ao fornecer uma arquitetura baseada em microsserviços que suporta funções bancárias básicas, incluindo criação de contas, transferências de fundos e gerenciamento de clientes. Ela utiliza Spring Security para o tratamento das requisições, PostgreSQL para persistência de dados e implementa uma arquitetura stateless para escalabilidade. O sistema foi projetado para lidar com múltiplos tipos de conta, manter histórico de transações e fornecer acesso seguro às operações bancárias por meio de endpoints REST.
 
-## 📦 Tecnologias e Ferramentas
-
-- Java 21
-- Spring Boot 3.4.5
-- Spring Security
-- Maven
-- RESTful API
-
----
-
-## 📁 Estrutura do Projeto
-
+## Estrutura do Repositório
 ```
-backend-main/
-├── src/
-│   └── main/
-│       ├── java/uol/compass/hackathon/Banking/System/
-│       │   ├── config/              # Configurações de segurança
-│       │   ├── controller/          # Endpoints da API REST
-│       │   ├── dto/                 # Objetos de Transferência de Dados
-│       │   ├── model/               # Entidades JPA
-│       │   └── BankingSystemApplication.java
-│       └── resources/
-├── pom.xml                          # Gerenciador de dependências Maven
-└── README.md
+banking-system/
+├── src/                           # Diretório do código-fonte
+│   ├── main/
+│   │   ├── java/                 # Arquivos-fonte Java
+│   │   │   └── uol/compass/hackathon/Banking/System/
+│   │   │       ├── config/       # Classes de configuração de segurança e web
+│   │   │       ├── controller/   # Controladores REST para contas, clientes e transações
+│   │   │       ├── dto/          # Objetos de transferência de dados para respostas da API
+│   │   │       ├── model/        # Modelos de domínio para Conta, Cliente e Transação
+│   │   │       ├── repository/   # Interfaces de acesso a dados
+│   │   │       └── service/      # Implementação da lógica de negócio
+│   │   └── resources/
+│   │       └── application.properties  # Configurações da aplicação
+│   └── test/                     # Arquivos de teste
+├── pom.xml                       # Configuração do projeto Maven
+└── mvnw, mvnw.cmd               # Scripts do Maven Wrapper
 ```
 
----
-
-## 🚀 Como Executar
+## Instruções de Uso
 
 ### Pré-requisitos
+- Java Development Kit (JDK) 21
+- PostgreSQL 12 ou superior
+- Maven 3.6 ou superior
+- Spring Boot 3.4.5
+- Porta 3000 disponível para a aplicação
+- Porta 5432 disponível para o PostgreSQL
 
-- [Java 21+](https://adoptium.net)
-- [Maven 3+](https://maven.apache.org/)
+### Instalação
 
-### Passos
-
+1. Clone o repositório:
 ```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/backend-main.git
-cd backend-main
+git clone [repository-url]
+cd banking-system
+```
 
-# Compile e rode a aplicação
+2. Configure o PostgreSQL:
+```bash
+# Crie o banco de dados
+psql -U postgres
+CREATE DATABASE projeto;
+```
+
+3. Atualize o arquivo `application.properties` com suas credenciais do banco de dados:
+```properties
+spring.datasource.username=seu-usuario
+spring.datasource.password=sua-senha
+```
+
+4. Compile e execute a aplicação:
+```bash
+./mvnw clean install
 ./mvnw spring-boot:run
 ```
 
-A aplicação estará disponível em:  
-📍 `http://localhost:8080`
+### Início Rápido
 
----
+1. Criar um novo cliente:
+```bash
+curl -X POST http://localhost:3000/api/customers \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","cpf":"12345678900"}'
+```
 
-## 🔐 Segurança
+2. Criar uma conta:
+```bash
+curl -X POST http://localhost:3000/api/accounts \
+  -H "Content-Type: application/json" \
+  -d '{"type":"CHECKING","balance":1000.00,"customerId":1}'
+```
 
-O projeto utiliza `Spring Security` para autenticação e autorização. Verifique o arquivo `SecurityConfig.java` para ajustes nas regras de acesso.
+3. Realizar uma transação:
+```bash
+curl -X POST http://localhost:3000/api/transactions \
+  -H "Content-Type: application/json" \
+  -d '{"sourceAccountId":1,"amount":100.00,"type":"WITHDRAWAL"}'
+```
 
----
+### Exemplos Mais Detalhados
 
-## 🧪 Endpoints REST
+1. Obter contas de um cliente:
+```bash
+curl -X GET http://localhost:3000/api/accounts/customer/1
+```
 
-Alguns exemplos de endpoints (verifique `controller/` para mais):
+2. Obter histórico de transações:
+```bash
+curl -X GET http://localhost:3000/api/transactions
+```
 
-| Método | Endpoint                 | Descrição                   |
-|--------|--------------------------|------------------------------|
-| GET    | `/customer`              | Lista todos os clientes     |
-| POST   | `/accounts`              | Cria uma conta bancária     |
-| POST   | `/transactions/transfer` | Realiza uma transferência   |
+### Solução de Problemas
 
----
+1. Problemas de Conexão com o Banco de Dados
+- Erro: "Unable to connect to database"
+  ```
+  Verifique se o PostgreSQL está em execução:
+  sudo service postgresql status
 
-## 👥 Contribuidores
+  Confirme as credenciais no application.properties
+  ```
 
-Projeto desenvolvido durante o **Hackathon UOL Compass**.
+2. Problemas ao iniciar a aplicação
+- Erro: "Port 3000 already in use"
+  ```bash
+  # Descubra o processo que está usando a porta 3000
+  lsof -i :3000
+  # Finalize o processo
+  kill -9 <PID>
+  ```
 
----
+## Fluxo de Dados
 
-## 📄 Licença
+O sistema bancário processa transações financeiras por meio de uma série de etapas validadas garantindo consistência e segurança dos dados.
 
-Este projeto está sob a licença [MIT](LICENSE).
+```ascii
+[Cliente] -> [Camada Controller]
+              |
+              v
+[Camada Service (Lógica de Negócio)]
+              |
+              v
+[Camada Repository] <-> [Banco de Dados PostgreSQL]
+```
+
+Interações entre componentes:
+1. Os controladores recebem as requisições HTTP e validam os dados de entrada
+2. Os serviços implementam a lógica de negócio e as regras de transação
+3. Os repositórios lidam com a persistência dos dados
+4. A camada de segurança valida todas as requisições recebidas
+5. Os DTOs realizam a transferência de dados entre as camadas
+6. Os modelos definem as entidades principais do domínio
+7. O banco de dados mantém a consistência das transações por meio das propriedades ACID

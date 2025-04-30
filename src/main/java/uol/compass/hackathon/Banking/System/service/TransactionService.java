@@ -26,7 +26,6 @@ public class TransactionService {
         Account source = accountRepository.findById(transaction.getSource().getId())
                 .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
 
-
         double amount = transaction.getAmount();
 
         switch (transaction.getType().toLowerCase()) {
@@ -38,14 +37,6 @@ public class TransactionService {
             case "withdraw":
                 if (source.getBalance() < amount) {
                     throw new RuntimeException("Saldo insuficiente.");
-                }
-                source.setBalance(source.getBalance() - amount);
-                accountRepository.save(source);
-                break;
-
-            case "transfer":
-                if (source.getBalance() < amount) {
-                    throw new RuntimeException("Saldo insuficiente para transferência.");
                 }
                 source.setBalance(source.getBalance() - amount);
                 accountRepository.save(source);
