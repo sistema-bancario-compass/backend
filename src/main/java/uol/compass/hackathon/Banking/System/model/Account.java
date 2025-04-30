@@ -14,7 +14,9 @@ public class Account {
     private Long id;
 
     private String type;
+
     private Double balance;
+
     private String status;
 
     @ManyToOne

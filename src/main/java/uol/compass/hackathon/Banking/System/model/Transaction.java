@@ -14,14 +14,14 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String type; // deposit, withdraw, transfer
-    private Double amount;
-    private LocalDateTime timestamp;
-
     @ManyToOne
     @JoinColumn(name = "source_id")
     private Account source;
 
-    @ManyToOne
-    private Account destination;
+    private LocalDateTime date;
+
+    private String type;
+
+    private Double amount;
+
 }

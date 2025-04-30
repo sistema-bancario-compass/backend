@@ -26,10 +26,6 @@ public class TransactionService {
         Account source = accountRepository.findById(transaction.getSource().getId())
                 .orElseThrow(() -> new RuntimeException("Conta de origem não encontrada."));
 
-        Account destination = transaction.getDestination() != null
-                ? accountRepository.findById(transaction.getDestination().getId())
-                .orElseThrow(() -> new RuntimeException("Conta de destino não encontrada."))
-                : null;
 
         double amount = transaction.getAmount();
 
@@ -52,16 +48,14 @@ public class TransactionService {
                     throw new RuntimeException("Saldo insuficiente para transferência.");
                 }
                 source.setBalance(source.getBalance() - amount);
-                destination.setBalance(destination.getBalance() + amount);
                 accountRepository.save(source);
-                accountRepository.save(destination);
                 break;
 
             default:
                 throw new IllegalArgumentException("Tipo de transação inválido: " + transaction.getType());
         }
 
-        transaction.setTimestamp(LocalDateTime.now());
+        transaction.setDate(LocalDateTime.now());
         return transactionRepository.save(transaction);
     }
 

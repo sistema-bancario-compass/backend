@@ -18,6 +18,9 @@ public class CustomerController {
 
     @PostMapping
     public Customer create(@RequestBody Customer customer) {
+if (repository.findByCpf(customer.getCpf()).isPresent()) {
+            throw new RuntimeException("Já existe um cliente cadastrado com este CPF.");
+        }
         return repository.save(customer);
     }
 
