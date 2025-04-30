@@ -68,7 +68,7 @@ Alguns exemplos de endpoints (verifique `controller/` para mais):
 
 | Método | Endpoint                 | Descrição                   |
 |--------|--------------------------|------------------------------|
-| GET    | `/clients`               | Lista todos os clientes     |
+| GET    | `/customer`              | Lista todos os clientes     |
 | POST   | `/accounts`              | Cria uma conta bancária     |
 | POST   | `/transactions/transfer` | Realiza uma transferência   |
 

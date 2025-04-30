@@ -18,5 +18,5 @@ public class Account {
     private String status;
 
     @ManyToOne
-    private Client client;
+    private Customer customer;
 }

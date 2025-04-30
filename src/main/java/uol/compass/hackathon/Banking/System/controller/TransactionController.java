@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uol.compass.hackathon.Banking.System.model.Account;
 import uol.compass.hackathon.Banking.System.model.Transaction;
-import uol.compass.hackathon.Banking.System.service.ClientService;
+import uol.compass.hackathon.Banking.System.service.CustomerService;
 import uol.compass.hackathon.Banking.System.service.TransactionService;
 
 import java.util.List;
@@ -17,11 +17,11 @@ public class TransactionController {
     private final TransactionService service;
 
     @Autowired
-    private final ClientService clientService;
+    private final CustomerService customerService;
 
-    public TransactionController(TransactionService service, ClientService clientService) {
+    public TransactionController(TransactionService service, CustomerService customerService) {
         this.service = service;
-        this.clientService = clientService;
+        this.customerService = customerService;
     }
 
     @PostMapping
@@ -45,12 +45,12 @@ public class TransactionController {
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<List<Account>> getAccountsByClient(@RequestBody Map<String, Long> payload) {
-        Long clientId = payload.get("clientId");
-        if (clientId == null) {
+    public ResponseEntity<List<Account>> getAccountsByCustomer(@RequestBody Map<String, Long> payload) {
+        Long customerId = payload.get("customerId");
+        if (customerId == null) {
             return ResponseEntity.badRequest().build();
         }
-        List<Account> contas = clientService.getAccountsByClientId(clientId);
+        List<Account> contas = customerService.getAccountsByCustomerId(customerId);
         if (contas.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

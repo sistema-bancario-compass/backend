@@ -5,5 +5,5 @@ import uol.compass.hackathon.Banking.System.model.Account;
 import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    List<Account> findByClientId(Long clientId);
+    List<Account> findByCustomerId(Long customerId);
 }
